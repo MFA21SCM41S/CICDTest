@@ -16,9 +16,6 @@ env:
   ORCH_USER_KEY: ${{secrets.ORCH_USER_KEY}}   # Replace with your application client secret
   CLI_URL: https://uipath.visualstudio.com/Public.Feeds/artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/overview/23.6.8581.19168
 
-# for OAUth
-  APP_ID: c97a6619-827d-4141-8892-b4f628d27a5e
-  APP_SECRET: 1439596
 
 jobs:
   print-details:
@@ -75,7 +72,5 @@ jobs:
       - name: Publish Nuget Package to DEV
         shell: pwsh
         run: |
-          # ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}}
-          ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -authenticationMethod OAuth -applicationId ${{env.APP_ID}} -applicationSecret ${{env.APP_SECRET}} -applicationScope "OR.License OR.License.Read OR.License.Write OR.Settings OR.Settings.Read OR.Settings.Write OR.Robots OR.Robots.Read OR.Robots.Write OR.Machines OR.Machines.Read OR.Machines.Write OR.Execution OR.Execution.Read OR.Execution.Write OR.Assets OR.Assets.Read OR.Assets.Write OR.Queues OR.Queues.Read OR.Queues.Write OR.Jobs OR.Jobs.Read OR.Jobs.Write OR.Users OR.Users.Read OR.Users.Write OR.Administration OR.Administration.Read OR.Administration.Write OR.Audit OR.Audit.Read OR.Audit.Write OR.Webhooks OR.Webhooks.Read OR.Webhooks.Write OR.Monitoring OR.Monitoring.Read OR.Monitoring.Write OR.ML OR.ML.Read OR.ML.Write OR.Tasks OR.Tasks.Read OR.Tasks.Write OR.Analytics OR.Analytics.Read OR.Analytics.Write OR.Folders OR.Folders.Read OR.Folders.Write OR.BackgroundTasks OR.BackgroundTasks.Read OR.BackgroundTasks.Write OR.TestSets OR.TestSets.Read OR.TestSets.Write OR.TestSetExecutions OR.TestSetExecutions.Read OR.TestSetExecutions.Write OR.TestSetSchedules OR.TestSetSchedules.Read OR.TestSetSchedules.Write OR.TestDataQueues OR.TestDataQueues.Read OR.TestDataQueues.Write OR.Hypervisor OR.Hypervisor.Read OR.Hypervisor.Write" -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}} 
+          ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}}
 
-# FCkOSnYj%V^U1(%Y
