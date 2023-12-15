@@ -6,7 +6,6 @@ on:
       - dev/CICDTest
 
 env:
-# for default auth
   PROJECT_NAME: CICDTest
   ORCH_URL: https://cloud.uipath.com/
   ORCH_TENANT: DefaultTenant
@@ -31,7 +30,6 @@ jobs:
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           echo "GITHUB_SHA: ${GITHUB_SHA}"
           echo "GITHUB_REF: ${GITHUB_REF}"
-
   cleaner:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +37,6 @@ jobs:
         run: |
           echo "Cleaning up previous run"
           rm -rf "${{ github.workspace }}"
-
   build-uipath-nuget-package:
     needs: cleaner
     runs-on: windows-latest
@@ -58,7 +55,6 @@ jobs:
           path: |
             package/*.*
             scripts/*.ps1
-
   publish-uipath-nuget-package:
     needs: build-uipath-nuget-package
     runs-on: windows-latest
@@ -71,5 +67,5 @@ jobs:
       - name: Publish Nuget Package to DEV
         shell: pwsh
         run: |
-          # ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}}
-          ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -authenticationMethod OAuth -applicationId ${{env.APP_ID}} -applicationSecret ${{env.APP_SECRET}} -applicationScope "OR.License OR.License.Read OR.License.Write OR.Settings OR.Settings.Read OR.Settings.Write OR.Robots OR.Robots.Read OR.Robots.Write OR.Machines OR.Machines.Read OR.Machines.Write OR.Execution OR.Execution.Read OR.Execution.Write OR.Assets OR.Assets.Read OR.Assets.Write OR.Queues OR.Queues.Read OR.Queues.Write OR.Jobs OR.Jobs.Read OR.Jobs.Write OR.Users OR.Users.Read OR.Users.Write OR.Administration OR.Administration.Read OR.Administration.Write OR.Audit OR.Audit.Read OR.Audit.Write OR.Webhooks OR.Webhooks.Read OR.Webhooks.Write OR.Monitoring OR.Monitoring.Read OR.Monitoring.Write OR.ML OR.ML.Read OR.ML.Write OR.Tasks OR.Tasks.Read OR.Tasks.Write OR.Analytics OR.Analytics.Read OR.Analytics.Write OR.Folders OR.Folders.Read OR.Folders.Write OR.BackgroundTasks OR.BackgroundTasks.Read OR.BackgroundTasks.Write OR.TestSets OR.TestSets.Read OR.TestSets.Write OR.TestSetExecutions OR.TestSetExecutions.Read OR.TestSetExecutions.Write OR.TestSetSchedules OR.TestSetSchedules.Read OR.TestSetSchedules.Write OR.TestDataQueues OR.TestDataQueues.Read OR.TestDataQueues.Write OR.Hypervisor OR.Hypervisor.Read OR.Hypervisor.Write" -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}} 
+          ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit ${{env.ORCH_FOLDER}} -cli_url ${{env.CLI_URL}}
+          
