@@ -1,0 +1,78 @@
+name: Development workflow
+
+on:
+  push:
+
+env:
+  PROJECT_NAME: uipath.github.action
+  ORCH_URL: "https://cloud.uipath.com/manansorganization/"
+  ORCH_TENANT: "DefaultTenant"
+  ORCH_FOLDER_NAME: test
+  ACCOUNT_NAME: "Test11"  # Replace with your application name
+  CLIENT_ID: "24fe29d0-1b3b-4a9f-bea0-ba52162ebb66"  # Replace with your application client ID
+  CLIENT_SECRET: "ymJgyFxJa31D*Mxc"  # Replace with your application client secret
+
+jobs:
+  print-details:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo-default-env-variables
+        run: |
+          echo "Home: ${HOME}"
+          echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"
+          echo "GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
+          echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "GITHUB_REF: ${GITHUB_REF}"
+
+  cleaner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runner workspace path
+        run: |
+          echo "Cleaning up previous run"
+          rm -rf "${{ github.workspace }}"
+
+  build-uipath-nuget-package:
+    needs: cleaner
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Build Nuget Package
+        shell: pwsh
+        run: ${{ github.workspace }}\scripts\UiPathPack.ps1 ${{ github.workspace }}\project.json -destination_folder ${{ github.workspace }}\package
+
+      - name: Upload UiPath Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Artifacts
+          path: |
+            package/**/*.nupkg
+            !package/unneeded-files/**
+            scripts/*.ps1
+
+  publish-uipath-nuget-package:
+    needs: build-uipath-nuget-package
+    runs-on: windows-latest
+    steps:
+      - name: Download UiPath Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Artifacts
+
+      - name: Publish Nuget Package to DEV
+        shell: pwsh
+        run: |
+          $cliPath = "${{ github.workspace }}\scripts\uipathcli\22.10.8438.32859\tools\uipcli.exe"
+          $script = "${{ github.workspace }}\scripts\UiPathDeploy.ps1"
+          $authenticationParams = @{
+            authenticationMethod = "OAuth"
+            client_id = "${{ env.CLIENT_ID }}"
+            client_secret = "${{ env.CLIENT_SECRET }}"
+          }
+          & $script $github.workspace "${{ env.ORCH_URL }}" "DefaultTenant" $authenticationParams
